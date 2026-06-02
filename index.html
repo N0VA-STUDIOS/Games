@@ -1,0 +1,2854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a0a14">
+<meta name="description" content="GameHub - Tu portal de juegos, apps y herramientas">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GameHub">
+<link rel="manifest" id="manifest-link">
+<title>GameHub</title>
+<style>
+/* ─── VARIABLES ─────────────────────────────────────────── */
+:root {
+  --bg: #0a0a14;
+  --bg2: #0f0f1e;
+  --bg3: #13132a;
+  --surface: rgba(255,255,255,0.04);
+  --surface2: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.14);
+  --accent: #6c63ff;
+  --accent2: #a78bfa;
+  --accent3: #38bdf8;
+  --accent4: #f472b6;
+  --accent5: #34d399;
+  --text: #f0f0ff;
+  --text2: rgba(240,240,255,0.6);
+  --text3: rgba(240,240,255,0.35);
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --green: #34d399;
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow2: 0 2px 12px rgba(0,0,0,0.3);
+  --radius: 16px;
+  --radius2: 12px;
+  --radius3: 8px;
+  --nav-h: 64px;
+  --sidebar-w: 260px;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --font-head: 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Segoe UI', system-ui, sans-serif;
+  --glow: 0 0 20px rgba(108,99,255,0.3);
+  --glow2: 0 0 40px rgba(108,99,255,0.15);
+}
+[data-theme="light"] {
+  --bg: #f0f0f8;
+  --bg2: #e8e8f4;
+  --bg3: #ddddf0;
+  --surface: rgba(0,0,0,0.04);
+  --surface2: rgba(0,0,0,0.07);
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #0a0a20;
+  --text2: rgba(10,10,32,0.6);
+  --text3: rgba(10,10,32,0.35);
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow2: 0 2px 12px rgba(0,0,0,0.08);
+}
+/* ─── RESET ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;height:100%;}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100%;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(108,99,255,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 110%, rgba(56,189,248,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(244,114,182,0.05) 0%, transparent 70%);
+  pointer-events:none;
+  z-index:0;
+}
+img{display:block;max-width:100%;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;color:inherit;}
+input,select,textarea{font-family:inherit;color:inherit;}
+a{color:inherit;text-decoration:none;}
+ul,ol{list-style:none;}
+/* ─── SCROLLBAR ─────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+/* ─── LAYOUT ─────────────────────────────────────────────── */
+#app{display:flex;height:100vh;overflow:hidden;position:relative;z-index:1;}
+/* ─── SIDEBAR ─────────────────────────────────────────────── */
+#sidebar{
+  width:var(--sidebar-w);
+  height:100%;
+  background:rgba(15,15,30,0.92);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+  z-index:100;
+  transition:transform var(--transition),width var(--transition);
+  position:relative;
+}
+#sidebar-header{
+  padding:20px 20px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--border);
+}
+.logo-icon{
+  width:40px;height:40px;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+  box-shadow:var(--glow);
+}
+.logo-text{
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:-0.5px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent3));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.logo-badge{
+  font-size:9px;
+  font-weight:700;
+  background:var(--accent);
+  color:#fff;
+  padding:2px 6px;
+  border-radius:99px;
+  margin-left:auto;
+  letter-spacing:0.5px;
+}
+#sidebar nav{flex:1;overflow-y:auto;padding:12px 12px;}
+.nav-section{margin-bottom:8px;}
+.nav-section-label{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--text3);
+  padding:8px 8px 4px;
+}
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:var(--radius3);
+  cursor:pointer;
+  transition:all var(--transition);
+  font-size:14px;
+  font-weight:500;
+  color:var(--text2);
+  position:relative;
+  margin-bottom:2px;
+}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(56,189,248,0.1));color:var(--accent2);font-weight:600;}
+.nav-item.active::before{
+  content:'';
+  position:absolute;
+  left:0;top:25%;bottom:25%;
+  width:3px;
+  background:var(--accent);
+  border-radius:99px;
+}
+.nav-item-icon{font-size:18px;width:22px;text-align:center;flex-shrink:0;}
+.nav-item-badge{
+  margin-left:auto;
+  background:var(--accent);
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  min-width:18px;height:18px;
+  border-radius:99px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 5px;
+}
+#sidebar-footer{
+  padding:12px;
+  border-top:1px solid var(--border);
+}
+.gamepad-status{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;
+  background:var(--surface);
+  border-radius:var(--radius3);
+  font-size:12px;
+  color:var(--text3);
+}
+.gamepad-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);transition:background 0.3s;}
+.gamepad-dot.connected{background:var(--green);box-shadow:0 0 8px var(--green);}
+/* ─── SIDEBAR OVERLAY ──────────────────────────────────── */
+#sidebar-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(4px);
+  z-index:99;
+}
+/* ─── MAIN ──────────────────────────────────────────────── */
+#main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  min-width:0;
+}
+/* ─── TOPBAR ─────────────────────────────────────────────── */
+#topbar{
+  height:var(--nav-h);
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  gap:12px;
+  background:rgba(10,10,20,0.8);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  z-index:50;
+}
+#menu-btn{
+  width:40px;height:40px;
+  border-radius:var(--radius3);
+  background:var(--surface);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  transition:all var(--transition);
+  display:none;
+}
+#menu-btn:hover{background:var(--surface2);}
+#page-title{
+  font-size:18px;
+  font-weight:700;
+  flex:1;
+}
+#search-box{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:99px;
+  padding:8px 16px;
+  flex:1;
+  max-width:320px;
+  transition:all var(--transition);
+}
+#search-box:focus-within{border-color:var(--accent);box-shadow:var(--glow);}
+#search-box input{
+  background:none;
+  border:none;
+  outline:none;
+  font-size:14px;
+  width:100%;
+}
+#search-box input::placeholder{color:var(--text3);}
+.topbar-btn{
+  width:40px;height:40px;
+  border-radius:var(--radius3);
+  background:var(--surface);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  transition:all var(--transition);
+  flex-shrink:0;
+}
+.topbar-btn:hover{background:var(--surface2);border-color:var(--accent);}
+/* ─── CONTENT ─────────────────────────────────────────────── */
+#content{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  position:relative;
+}
+/* ─── PAGES ──────────────────────────────────────────────── */
+.page{
+  display:none;
+  animation:pageFade 0.3s ease;
+  min-height:100%;
+}
+.page.active{display:block;}
+@keyframes pageFade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+/* ─── HOME PAGE ─────────────────────────────────────────── */
+#page-home{padding:0;}
+/* ─── HERO BANNER ─────────────────────────────────────────── */
+.hero{
+  position:relative;
+  height:380px;
+  overflow:hidden;
+  background:linear-gradient(135deg,#0f0f2e,#1a0a30);
+}
+.hero-slides{
+  display:flex;
+  height:100%;
+  transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.hero-slide{
+  min-width:100%;
+  height:100%;
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  padding:32px;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background-size:cover;
+  background-position:center;
+  transition:transform 8s ease;
+}
+.hero-slide:hover .hero-bg{transform:scale(1.05);}
+.hero-gradient{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(10,10,20,0.95) 0%,rgba(10,10,20,0.4) 50%,transparent 100%),
+             linear-gradient(to right,rgba(10,10,20,0.6) 0%,transparent 60%);
+}
+.hero-content{position:relative;z-index:1;max-width:500px;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(108,99,255,0.3);
+  border:1px solid rgba(108,99,255,0.5);
+  border-radius:99px;
+  padding:4px 12px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:12px;
+  backdrop-filter:blur(8px);
+}
+.hero-title{
+  font-size:clamp(22px,4vw,36px);
+  font-weight:900;
+  line-height:1.1;
+  letter-spacing:-0.5px;
+  margin-bottom:8px;
+  text-shadow:0 2px 20px rgba(0,0,0,0.5);
+}
+.hero-desc{
+  font-size:13px;
+  color:var(--text2);
+  margin-bottom:16px;
+  line-height:1.5;
+}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));
+  color:#fff;
+  padding:10px 20px;
+  border-radius:99px;
+  font-size:14px;
+  font-weight:700;
+  transition:all var(--transition);
+  box-shadow:0 4px 20px rgba(108,99,255,0.4);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,99,255,0.5);}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.2);
+  color:var(--text);
+  padding:10px 20px;
+  border-radius:99px;
+  font-size:14px;
+  font-weight:600;
+  transition:all var(--transition);
+}
+.btn-secondary:hover{background:rgba(255,255,255,0.18);}
+.hero-dots{
+  position:absolute;
+  bottom:16px;right:16px;
+  display:flex;gap:6px;z-index:10;
+}
+.hero-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.3);
+  cursor:pointer;
+  transition:all 0.3s;
+}
+.hero-dot.active{width:20px;border-radius:99px;background:var(--accent2);}
+.hero-nav{
+  position:absolute;
+  top:50%;transform:translateY(-50%);
+  z-index:10;
+  width:36px;height:36px;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--border2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:all var(--transition);
+  font-size:16px;
+}
+.hero-nav:hover{background:rgba(108,99,255,0.5);}
+#hero-prev{left:16px;}
+#hero-next{right:16px;}
+/* ─── SECTION ─────────────────────────────────────────────── */
+.section{padding:24px 20px;}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.section-title{
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:-0.3px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-emoji{font-size:20px;}
+.section-more{
+  font-size:13px;
+  font-weight:600;
+  color:var(--accent2);
+  cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+  transition:gap var(--transition);
+}
+.section-more:hover{gap:8px;}
+/* ─── CARDS ROW ─────────────────────────────────────────── */
+.cards-row{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding-bottom:8px;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+}
+.cards-row::-webkit-scrollbar{height:0;}
+/* ─── CARD ─────────────────────────────────────────────────── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  cursor:pointer;
+  transition:all var(--transition);
+  flex-shrink:0;
+  scroll-snap-align:start;
+  position:relative;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow),var(--glow2);
+}
+.card:hover .card-img-inner{transform:scale(1.05);}
+.card.small{width:160px;}
+.card.medium{width:220px;}
+.card.large{width:280px;}
+.card-img{
+  aspect-ratio:16/9;
+  overflow:hidden;
+  background:linear-gradient(135deg,var(--bg3),var(--bg2));
+  position:relative;
+}
+.card-img-inner{
+  width:100%;height:100%;
+  transition:transform 0.5s ease;
+}
+.card-img img{width:100%;height:100%;object-fit:cover;}
+.card-img-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;
+}
+.card-type-badge{
+  position:absolute;top:8px;left:8px;
+  font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  padding:3px 8px;
+  border-radius:99px;
+  backdrop-filter:blur(8px);
+}
+.card-type-game{background:rgba(108,99,255,0.8);color:#fff;}
+.card-type-app{background:rgba(56,189,248,0.8);color:#fff;}
+.card-type-tool{background:rgba(52,211,153,0.8);color:#fff;}
+.card-type-website{background:rgba(244,114,182,0.8);color:#fff;}
+.card-fav-btn{
+  position:absolute;top:8px;right:8px;
+  width:28px;height:28px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+  transition:all var(--transition);
+  opacity:0;
+}
+.card:hover .card-fav-btn{opacity:1;}
+.card-fav-btn.active{opacity:1;color:var(--yellow);}
+.card-body{padding:12px;}
+.card-name{
+  font-size:14px;font-weight:700;
+  margin-bottom:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.card-meta{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text3);
+}
+.card-cat{
+  display:flex;align-items:center;gap:4px;
+}
+.card-desc{
+  font-size:11px;
+  color:var(--text2);
+  margin-top:6px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  line-height:1.4;
+}
+/* ─── STATS ROW ─────────────────────────────────────────── */
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+  gap:12px;
+  padding:0 20px 24px;
+}
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius2);
+  padding:16px;
+  text-align:center;
+  transition:all var(--transition);
+}
+.stat-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.stat-num{font-size:28px;font-weight:900;color:var(--accent2);}
+.stat-label{font-size:11px;color:var(--text3);margin-top:4px;}
+/* ─── CATEGORIES ─────────────────────────────────────────── */
+.cat-grid{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.cat-pill{
+  display:flex;align-items:center;gap:6px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:99px;
+  padding:8px 16px;
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  transition:all var(--transition);
+  white-space:nowrap;
+}
+.cat-pill:hover,.cat-pill.active{
+  background:rgba(108,99,255,0.15);
+  border-color:var(--accent);
+  color:var(--accent2);
+}
+/* ─── LIBRARY PAGE ─────────────────────────────────────── */
+#page-library{padding:20px;}
+.filter-bar{
+  display:flex;gap:10px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+}
+.filter-select{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:99px;
+  padding:8px 14px;
+  font-size:13px;
+  outline:none;
+  cursor:pointer;
+  transition:all var(--transition);
+  appearance:none;
+  padding-right:28px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 10L2 4h12z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+}
+.filter-select:focus{border-color:var(--accent);}
+.grid-2{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:16px;
+}
+.library-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  cursor:pointer;
+  transition:all var(--transition);
+  display:flex;
+  flex-direction:column;
+}
+.library-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow),var(--glow2);
+}
+.library-card:hover .lc-img{transform:scale(1.05);}
+.lc-img-wrap{
+  aspect-ratio:16/9;
+  overflow:hidden;
+  background:linear-gradient(135deg,var(--bg3),var(--bg2));
+  position:relative;
+}
+.lc-img{
+  width:100%;height:100%;
+  object-fit:cover;
+  transition:transform 0.5s ease;
+}
+.lc-img-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;
+}
+.lc-body{padding:14px;flex:1;display:flex;flex-direction:column;}
+.lc-name{font-size:15px;font-weight:700;margin-bottom:4px;}
+.lc-meta{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text3);margin-bottom:8px;}
+.lc-desc{font-size:12px;color:var(--text2);line-height:1.5;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.lc-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--border);
+}
+.lc-open-btn{
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));
+  color:#fff;
+  padding:7px 14px;
+  border-radius:99px;
+  font-size:12px;font-weight:700;
+  transition:all var(--transition);
+}
+.lc-open-btn:hover{transform:scale(1.05);}
+.lc-fav-btn{
+  width:32px;height:32px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  transition:all var(--transition);
+}
+.lc-fav-btn:hover{border-color:var(--yellow);}
+.lc-fav-btn.active{color:var(--yellow);border-color:var(--yellow);}
+/* ─── SEARCH PAGE ─────────────────────────────────────── */
+#page-search{padding:20px;}
+.search-big{
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px 20px;
+  display:flex;gap:12px;
+  align-items:center;
+  margin-bottom:20px;
+  transition:all var(--transition);
+}
+.search-big:focus-within{border-color:var(--accent);box-shadow:var(--glow);}
+.search-big input{
+  flex:1;background:none;border:none;outline:none;
+  font-size:18px;font-weight:500;
+}
+.search-big input::placeholder{color:var(--text3);}
+.search-icon{font-size:22px;color:var(--text3);}
+.search-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.search-filter-btn{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:99px;
+  padding:6px 14px;
+  font-size:12px;font-weight:600;
+  cursor:pointer;
+  transition:all var(--transition);
+}
+.search-filter-btn.active,.search-filter-btn:hover{
+  background:rgba(108,99,255,0.2);
+  border-color:var(--accent);
+  color:var(--accent2);
+}
+#search-results-count{
+  font-size:13px;color:var(--text3);
+  margin-bottom:16px;
+}
+/* ─── FAVORITES PAGE ─────────────────────────────────── */
+#page-favorites{padding:20px;}
+.empty-state{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:60px 20px;
+  text-align:center;
+  gap:12px;
+}
+.empty-icon{font-size:64px;opacity:0.3;}
+.empty-title{font-size:18px;font-weight:700;color:var(--text2);}
+.empty-desc{font-size:13px;color:var(--text3);max-width:280px;line-height:1.5;}
+/* ─── HISTORY PAGE ─────────────────────────────────────── */
+#page-history{padding:20px;}
+.history-list{display:flex;flex-direction:column;gap:10px;}
+.history-item{
+  display:flex;align-items:center;gap:14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius2);
+  padding:14px;
+  cursor:pointer;
+  transition:all var(--transition);
+}
+.history-item:hover{border-color:var(--accent);transform:translateX(4px);}
+.history-thumb{
+  width:56px;height:56px;
+  border-radius:var(--radius3);
+  overflow:hidden;
+  background:var(--bg3);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+}
+.history-thumb img{width:100%;height:100%;object-fit:cover;}
+.history-info{flex:1;min-width:0;}
+.history-name{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.history-meta{font-size:12px;color:var(--text3);margin-top:4px;display:flex;gap:10px;}
+.history-plays{
+  display:flex;align-items:center;gap:4px;
+  background:var(--surface2);
+  border-radius:99px;
+  padding:4px 10px;
+  font-size:11px;font-weight:700;
+  color:var(--accent2);
+  flex-shrink:0;
+}
+/* ─── CATEGORIES PAGE ─────────────────────────────────── */
+#page-categories{padding:20px;}
+.cat-section{margin-bottom:32px;}
+.cat-section-title{
+  font-size:20px;font-weight:800;
+  margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+/* ─── SETTINGS PAGE ─────────────────────────────────────── */
+#page-settings{padding:20px;}
+.settings-group{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.settings-group-title{
+  font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--text3);
+  padding:14px 16px 8px;
+}
+.settings-item{
+  display:flex;align-items:center;
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  gap:12px;
+  transition:background var(--transition);
+}
+.settings-item:last-child{border-bottom:none;}
+.settings-item:hover{background:var(--surface2);}
+.settings-item-icon{font-size:20px;width:24px;text-align:center;}
+.settings-item-info{flex:1;}
+.settings-item-label{font-size:14px;font-weight:600;}
+.settings-item-desc{font-size:12px;color:var(--text3);margin-top:2px;}
+/* ─── TOGGLE ─────────────────────────────────────────────── */
+.toggle{
+  position:relative;
+  width:44px;height:24px;
+  flex-shrink:0;
+}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;inset:0;
+  background:var(--bg3);
+  border-radius:99px;
+  cursor:pointer;
+  transition:all var(--transition);
+  border:1px solid var(--border2);
+}
+.toggle-slider::before{
+  content:'';
+  position:absolute;
+  left:3px;top:3px;
+  width:16px;height:16px;
+  background:#fff;
+  border-radius:50%;
+  transition:transform var(--transition);
+}
+.toggle input:checked + .toggle-slider{background:var(--accent);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px);}
+/* ─── SETTINGS BUTTONS ─────────────────────────────────── */
+.settings-btn{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius3);
+  padding:8px 16px;
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  transition:all var(--transition);
+}
+.settings-btn:hover{border-color:var(--accent);color:var(--accent2);}
+.settings-btn.danger:hover{border-color:var(--red);color:var(--red);}
+/* ─── ABOUT PAGE ─────────────────────────────────────────── */
+#page-about{padding:20px;}
+.about-hero{
+  text-align:center;
+  padding:40px 20px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin-bottom:20px;
+}
+.about-logo{
+  width:80px;height:80px;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));
+  border-radius:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;
+  margin:0 auto 16px;
+  box-shadow:var(--glow);
+}
+.about-name{font-size:32px;font-weight:900;letter-spacing:-1px;}
+.about-version{font-size:13px;color:var(--text3);margin-top:4px;}
+.about-desc{font-size:14px;color:var(--text2);margin-top:12px;line-height:1.6;max-width:400px;margin-left:auto;margin-right:auto;}
+.about-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;}
+.about-tag{
+  background:rgba(108,99,255,0.15);
+  border:1px solid rgba(108,99,255,0.3);
+  border-radius:99px;
+  padding:4px 12px;
+  font-size:12px;
+  color:var(--accent2);
+}
+/* ─── ACHIEVEMENTS ─────────────────────────────────────── */
+.achievements-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;
+}
+.achievement{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius2);
+  padding:16px;
+  text-align:center;
+  transition:all var(--transition);
+  position:relative;
+  overflow:hidden;
+}
+.achievement.unlocked{border-color:var(--yellow);}
+.achievement.unlocked::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(251,191,36,0.1),transparent);
+}
+.achievement-icon{font-size:32px;margin-bottom:8px;}
+.achievement-name{font-size:13px;font-weight:700;}
+.achievement-desc{font-size:11px;color:var(--text3);margin-top:4px;}
+.achievement-lock{
+  position:absolute;top:8px;right:8px;
+  font-size:12px;
+  color:var(--text3);
+}
+/* ─── PLAYER MODAL ─────────────────────────────────────── */
+#player-modal{
+  display:none;
+  position:fixed;inset:0;
+  background:var(--bg);
+  z-index:1000;
+  flex-direction:column;
+  animation:slidein 0.3s ease;
+}
+@keyframes slidein{from{transform:translateY(100%);}to{transform:translateY(0);}}
+#player-modal.open{display:flex;}
+#player-topbar{
+  height:56px;
+  display:flex;align-items:center;
+  padding:0 16px;
+  gap:10px;
+  background:rgba(10,10,20,0.95);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+#player-back{
+  width:36px;height:36px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  cursor:pointer;
+  transition:all var(--transition);
+}
+#player-back:hover{background:var(--surface2);}
+#player-title{font-size:16px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.player-btn{
+  width:36px;height:36px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  cursor:pointer;
+  transition:all var(--transition);
+}
+.player-btn:hover{background:var(--surface2);}
+.player-btn.active{background:rgba(251,191,36,0.2);border-color:var(--yellow);color:var(--yellow);}
+#player-frame-wrap{
+  flex:1;
+  position:relative;
+  background:var(--bg);
+}
+#player-frame{
+  width:100%;height:100%;
+  border:none;
+}
+#player-loader{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:16px;
+  background:var(--bg);
+}
+.loader-spinner{
+  width:48px;height:48px;
+  border:3px solid var(--border2);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+#player-info-panel{
+  display:none;
+  position:absolute;
+  top:0;right:0;
+  width:300px;
+  max-width:90vw;
+  height:100%;
+  background:rgba(10,10,20,0.97);
+  backdrop-filter:blur(20px);
+  border-left:1px solid var(--border);
+  padding:20px;
+  overflow-y:auto;
+  z-index:10;
+  animation:slideLeft 0.2s ease;
+}
+@keyframes slideLeft{from{transform:translateX(100%);}to{transform:translateX(0);}}
+#player-info-panel.open{display:block;}
+#player-info-img{
+  aspect-ratio:16/9;
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin-bottom:14px;
+}
+#player-info-img img{width:100%;height:100%;object-fit:cover;}
+/* ─── TOAST ─────────────────────────────────────────────── */
+#toast-container{
+  position:fixed;
+  bottom:80px;
+  left:50%;transform:translateX(-50%);
+  z-index:9999;
+  display:flex;flex-direction:column;
+  align-items:center;
+  gap:8px;
+  pointer-events:none;
+}
+.toast{
+  background:rgba(20,20,40,0.95);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border2);
+  border-radius:99px;
+  padding:10px 20px;
+  font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+  animation:toastIn 0.3s ease, toastOut 0.3s ease 2.2s forwards;
+  white-space:nowrap;
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes toastOut{from{opacity:1;}to{opacity:0;transform:translateY(-10px);}}
+/* ─── NOTIFICATION BADGE ─────────────────────────────── */
+.notif-badge{
+  position:fixed;
+  top:16px;right:16px;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));
+  border-radius:var(--radius);
+  padding:12px 16px;
+  max-width:280px;
+  z-index:9000;
+  animation:notifIn 0.4s cubic-bezier(0.34,1.56,0.64,1),notifOut 0.3s ease 4s forwards;
+  box-shadow:var(--shadow),var(--glow);
+}
+@keyframes notifIn{from{opacity:0;transform:translateX(100%);}to{opacity:1;transform:translateX(0);}}
+@keyframes notifOut{from{opacity:1;}to{opacity:0;transform:translateX(110%);}}
+.notif-title{font-size:13px;font-weight:800;}
+.notif-body{font-size:11px;opacity:0.8;margin-top:2px;}
+/* ─── PROGRESS BAR ─────────────────────────────────────── */
+#progress-bar{
+  position:fixed;top:0;left:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent3),var(--accent4));
+  width:0;
+  z-index:9998;
+  transition:width 0.3s ease;
+  box-shadow:0 0 10px rgba(108,99,255,0.6);
+}
+/* ─── INSTALL BANNER ─────────────────────────────────── */
+#install-banner{
+  display:none;
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:rgba(15,15,30,0.98);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  padding:16px 20px;
+  z-index:500;
+  align-items:center;
+  gap:12px;
+}
+#install-banner.show{display:flex;}
+.install-info{flex:1;}
+.install-title{font-size:15px;font-weight:700;}
+.install-desc{font-size:12px;color:var(--text2);margin-top:2px;}
+.install-actions{display:flex;gap:8px;}
+/* ─── GAMEPAD INDICATOR ─────────────────────────────────── */
+#gamepad-indicator{
+  position:fixed;
+  top:80px;right:16px;
+  background:rgba(52,211,153,0.15);
+  border:1px solid rgba(52,211,153,0.4);
+  border-radius:var(--radius3);
+  padding:8px 12px;
+  font-size:12px;font-weight:600;
+  color:var(--green);
+  display:none;
+  align-items:center;gap:6px;
+  z-index:8000;
+  backdrop-filter:blur(8px);
+}
+#gamepad-indicator.show{display:flex;}
+/* ─── TIME STATS ─────────────────────────────────────────── */
+.time-bar-wrap{
+  background:var(--surface);
+  border-radius:99px;
+  height:6px;
+  overflow:hidden;
+  margin-top:6px;
+}
+.time-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--accent3));
+  border-radius:99px;
+  transition:width 0.5s ease;
+}
+/* ─── RANKING ─────────────────────────────────────────────── */
+.ranking-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.ranking-item:last-child{border-bottom:none;}
+.ranking-num{
+  font-size:18px;font-weight:900;
+  width:28px;text-align:center;
+  color:var(--text3);
+}
+.ranking-num.gold{color:#fbbf24;}
+.ranking-num.silver{color:#9ca3af;}
+.ranking-num.bronze{color:#92400e;}
+.ranking-thumb{
+  width:44px;height:44px;
+  border-radius:var(--radius3);
+  overflow:hidden;background:var(--bg3);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.ranking-thumb img{width:100%;height:100%;object-fit:cover;}
+.ranking-info{flex:1;min-width:0;}
+.ranking-name{font-size:14px;font-weight:700;}
+.ranking-plays{font-size:12px;color:var(--text3);margin-top:2px;}
+/* ─── RECOMMENDATIONS ─────────────────────────────────── */
+.recs-list{display:flex;flex-direction:column;gap:8px;}
+.rec-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius3);
+  cursor:pointer;
+  transition:all var(--transition);
+}
+.rec-item:hover{border-color:var(--accent);transform:translateX(4px);}
+.rec-thumb{width:40px;height:40px;border-radius:8px;overflow:hidden;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.rec-thumb img{width:100%;height:100%;object-fit:cover;}
+.rec-name{font-size:13px;font-weight:600;}
+.rec-reason{font-size:11px;color:var(--text3);}
+/* ─── RESPONSIVE MOBILE ─────────────────────────────────── */
+@media(max-width:768px){
+  #sidebar{
+    position:fixed;
+    left:0;top:0;
+    transform:translateX(-100%);
+    height:100%;
+  }
+  #sidebar.open{transform:translateX(0);}
+  #sidebar-overlay.show{display:block;}
+  #menu-btn{display:flex;}
+  #search-box{display:none;}
+  .card.small{width:140px;}
+  .card.medium{width:180px;}
+  .card.large{width:240px;}
+  .hero{height:280px;}
+  .hero-content{padding:0;}
+  .hero-title{font-size:20px;}
+  .hero-slide{padding:20px 16px;}
+  #player-info-panel{width:100%;height:50%;top:auto;bottom:0;border-left:none;border-top:1px solid var(--border);}
+  .grid-2{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+}
+/* ─── SCROLLABLE TABS ─────────────────────────────────── */
+.tab-bar{
+  display:flex;gap:4px;
+  overflow-x:auto;
+  padding-bottom:4px;
+  margin-bottom:16px;
+}
+.tab-bar::-webkit-scrollbar{height:0;}
+.tab-btn{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:99px;
+  padding:6px 16px;
+  font-size:13px;font-weight:600;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:all var(--transition);
+}
+.tab-btn.active,.tab-btn:hover{background:rgba(108,99,255,0.2);border-color:var(--accent);color:var(--accent2);}
+/* ─── FULLSCREEN HINT ─────────────────────────────────── */
+#fullscreen-hint{
+  position:fixed;
+  bottom:100px;
+  right:20px;
+  background:rgba(10,10,20,0.9);
+  border:1px solid var(--border);
+  border-radius:var(--radius2);
+  padding:10px 14px;
+  font-size:12px;
+  z-index:5000;
+  display:none;
+  pointer-events:none;
+  backdrop-filter:blur(10px);
+}
+</style>
+</head>
+<body data-theme="dark" data-animations="true">
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <div style="font-size:32px;">🎮</div>
+  <div class="install-info">
+    <div class="install-title">Instalar GameHub</div>
+    <div class="install-desc">Añade la app a tu pantalla de inicio</div>
+  </div>
+  <div class="install-actions">
+    <button class="settings-btn" id="install-dismiss">Después</button>
+    <button class="btn-primary" id="install-btn">Instalar</button>
+  </div>
+</div>
+
+<!-- GAMEPAD INDICATOR -->
+<div id="gamepad-indicator">🎮 Control conectado</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- PLAYER MODAL -->
+<div id="player-modal">
+  <div id="player-topbar">
+    <button id="player-back" title="Volver">←</button>
+    <div id="player-title">Cargando...</div>
+    <button class="player-btn" id="player-fav-btn" title="Favorito">⭐</button>
+    <button class="player-btn" id="player-info-btn" title="Información">ℹ️</button>
+    <button class="player-btn" id="player-share-btn" title="Compartir">🔗</button>
+    <button class="player-btn" id="player-fs-btn" title="Pantalla completa">⛶</button>
+  </div>
+  <div id="player-frame-wrap">
+    <div id="player-loader">
+      <div class="loader-spinner"></div>
+      <div style="font-size:14px;color:var(--text2);">Cargando...</div>
+    </div>
+    <iframe id="player-frame" allowfullscreen allow="fullscreen *; autoplay *; accelerometer *; gyroscope *; microphone *; camera *; gamepad *;"></iframe>
+    <div id="player-info-panel">
+      <div id="player-info-img"><div style="height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:48px;" id="player-info-thumb"></div></div>
+      <div id="player-info-type-badge" style="margin-bottom:8px;"></div>
+      <div id="player-info-name" style="font-size:20px;font-weight:800;margin-bottom:8px;"></div>
+      <div id="player-info-cat" style="font-size:12px;color:var(--text3);margin-bottom:12px;"></div>
+      <div id="player-info-desc" style="font-size:13px;color:var(--text2);line-height:1.6;"></div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <div id="player-info-plays" style="font-size:12px;color:var(--text3);"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div class="logo-icon">🎮</div>
+      <div class="logo-text">GameHub</div>
+      <div class="logo-badge">v2.0</div>
+    </div>
+    <nav>
+      <div class="nav-section">
+        <div class="nav-section-label">Principal</div>
+        <div class="nav-item active" data-page="home"><span class="nav-item-icon">🏠</span> Inicio</div>
+        <div class="nav-item" data-page="library"><span class="nav-item-icon">📚</span> Biblioteca</div>
+        <div class="nav-item" data-page="favorites"><span class="nav-item-icon">⭐</span> Favoritos <span class="nav-item-badge" id="fav-badge">0</span></div>
+        <div class="nav-item" data-page="history"><span class="nav-item-icon">🕐</span> Historial</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Explorar</div>
+        <div class="nav-item" data-page="search"><span class="nav-item-icon">🔍</span> Buscar</div>
+        <div class="nav-item" data-page="categories"><span class="nav-item-icon">🗂️</span> Categorías</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Sistema</div>
+        <div class="nav-item" data-page="settings"><span class="nav-item-icon">⚙️</span> Configuración</div>
+        <div class="nav-item" data-page="about"><span class="nav-item-icon">ℹ️</span> Acerca de</div>
+      </div>
+    </nav>
+    <div id="sidebar-footer">
+      <div class="gamepad-status">
+        <div class="gamepad-dot" id="gamepad-dot"></div>
+        <span id="gamepad-text">Sin control</span>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-overlay"></div>
+
+  <!-- MAIN -->
+  <div id="main">
+    <!-- TOPBAR -->
+    <div id="topbar">
+      <button id="menu-btn">☰</button>
+      <div id="page-title">Inicio</div>
+      <div id="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Buscar juegos, apps..." id="topbar-search" autocomplete="off">
+      </div>
+      <button class="topbar-btn" id="fullscreen-toggle-btn" title="Pantalla completa">⛶</button>
+      <button class="topbar-btn" id="notify-btn" title="Notificación de prueba">🔔</button>
+    </div>
+
+    <!-- CONTENT PAGES -->
+    <div id="content">
+
+      <!-- HOME -->
+      <div class="page active" id="page-home">
+        <!-- HERO -->
+        <div class="hero" id="hero">
+          <div class="hero-slides" id="hero-slides"></div>
+          <button class="hero-nav" id="hero-prev">‹</button>
+          <button class="hero-nav" id="hero-next">›</button>
+          <div class="hero-dots" id="hero-dots"></div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total</div></div>
+          <div class="stat-card"><div class="stat-num" id="stat-games">0</div><div class="stat-label">Juegos</div></div>
+          <div class="stat-card"><div class="stat-num" id="stat-apps">0</div><div class="stat-label">Apps</div></div>
+          <div class="stat-card"><div class="stat-num" id="stat-tools">0</div><div class="stat-label">Herramientas</div></div>
+          <div class="stat-card"><div class="stat-num" id="stat-time">0h</div><div class="stat-label">Tiempo de uso</div></div>
+        </div>
+
+        <!-- FEATURED -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-emoji">⭐</span> Destacados</div>
+            <div class="section-more" onclick="navigateTo('library')">Ver todo →</div>
+          </div>
+          <div class="cards-row" id="featured-row"></div>
+        </div>
+
+        <!-- RECENT -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-emoji">🆕</span> Últimos agregados</div>
+          </div>
+          <div class="cards-row" id="recent-row"></div>
+        </div>
+
+        <!-- MOST PLAYED -->
+        <div class="section" id="most-played-section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-emoji">🔥</span> Más jugados</div>
+          </div>
+          <div id="most-played-list" style="max-height:400px;overflow:hidden;"></div>
+        </div>
+
+        <!-- CATEGORIES QUICK -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-emoji">🗂️</span> Categorías</div>
+            <div class="section-more" onclick="navigateTo('categories')">Ver todo →</div>
+          </div>
+          <div class="cat-grid" id="home-cats"></div>
+        </div>
+
+        <!-- RECOMMENDATIONS -->
+        <div class="section" id="recs-section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-emoji">💡</span> Recomendados para ti</div>
+          </div>
+          <div class="recs-list" id="recs-list"></div>
+        </div>
+
+        <div style="height:20px;"></div>
+      </div>
+
+      <!-- LIBRARY -->
+      <div class="page" id="page-library">
+        <div class="filter-bar">
+          <select class="filter-select" id="lib-type-filter">
+            <option value="">Todos los tipos</option>
+            <option value="game">Juegos</option>
+            <option value="app">Apps</option>
+            <option value="tool">Herramientas</option>
+            <option value="website">Sitios Web</option>
+          </select>
+          <select class="filter-select" id="lib-cat-filter">
+            <option value="">Todas las categorías</option>
+          </select>
+          <select class="filter-select" id="lib-sort">
+            <option value="default">Orden por defecto</option>
+            <option value="name">A - Z</option>
+            <option value="plays">Más jugados</option>
+          </select>
+        </div>
+        <div id="lib-count" style="font-size:13px;color:var(--text3);margin-bottom:16px;"></div>
+        <div class="grid-2" id="library-grid"></div>
+      </div>
+
+      <!-- SEARCH -->
+      <div class="page" id="page-search">
+        <div class="search-big">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Buscar juegos, apps, herramientas..." id="main-search" autocomplete="off">
+          <span id="search-clear" style="cursor:pointer;color:var(--text3);display:none;">✕</span>
+        </div>
+        <div class="search-filters">
+          <button class="search-filter-btn active" data-filter="all">Todo</button>
+          <button class="search-filter-btn" data-filter="game">🎮 Juegos</button>
+          <button class="search-filter-btn" data-filter="app">📱 Apps</button>
+          <button class="search-filter-btn" data-filter="tool">🔧 Herramientas</button>
+          <button class="search-filter-btn" data-filter="website">🌐 Sitios</button>
+        </div>
+        <div id="search-results-count"></div>
+        <div class="grid-2" id="search-results-grid"></div>
+        <div id="search-empty" style="display:none;" class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-title">Sin resultados</div>
+          <div class="empty-desc">Intenta con otras palabras o filtra por tipo diferente</div>
+        </div>
+      </div>
+
+      <!-- FAVORITES -->
+      <div class="page" id="page-favorites">
+        <div id="fav-empty" class="empty-state" style="display:none;">
+          <div class="empty-icon">⭐</div>
+          <div class="empty-title">Sin favoritos aún</div>
+          <div class="empty-desc">Marca contenido como favorito para encontrarlo fácilmente aquí</div>
+        </div>
+        <div class="grid-2" id="favorites-grid"></div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="page" id="page-history">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div style="font-size:14px;color:var(--text3);" id="history-count"></div>
+          <button class="settings-btn danger" onclick="clearHistory()">🗑️ Limpiar</button>
+        </div>
+        <div id="history-empty" class="empty-state" style="display:none;">
+          <div class="empty-icon">🕐</div>
+          <div class="empty-title">Historial vacío</div>
+          <div class="empty-desc">El historial de tus contenidos abiertos aparecerá aquí</div>
+        </div>
+        <div class="history-list" id="history-list"></div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="page" id="page-categories">
+        <div id="categories-content"></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="settings-group">
+          <div class="settings-group-title">Apariencia</div>
+          <div class="settings-item">
+            <div class="settings-item-icon">🌙</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Modo oscuro</div>
+              <div class="settings-item-desc">Interfaz oscura para cuidar la vista</div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="toggle-dark" checked><div class="toggle-slider"></div></label>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-icon">✨</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Animaciones</div>
+              <div class="settings-item-desc">Efectos visuales y transiciones suaves</div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="toggle-anim" checked><div class="toggle-slider"></div></label>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-icon">🔊</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Sonidos de UI</div>
+              <div class="settings-item-desc">Efectos de sonido al interactuar</div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="toggle-sound"><div class="toggle-slider"></div></label>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Datos</div>
+          <div class="settings-item" style="flex-wrap:wrap;gap:8px;">
+            <div class="settings-item-icon">📤</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Exportar datos</div>
+              <div class="settings-item-desc">Guarda tus favoritos e historial</div>
+            </div>
+            <button class="settings-btn" onclick="exportData()">📥 Exportar</button>
+          </div>
+          <div class="settings-item" style="flex-wrap:wrap;gap:8px;">
+            <div class="settings-item-icon">📥</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Importar datos</div>
+              <div class="settings-item-desc">Restaura un backup previo</div>
+            </div>
+            <button class="settings-btn" onclick="importData()">📤 Importar</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Limpieza</div>
+          <div class="settings-item">
+            <div class="settings-item-icon">🕐</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Limpiar historial</div>
+              <div class="settings-item-desc">Elimina todo el historial de reproducción</div>
+            </div>
+            <button class="settings-btn danger" onclick="clearHistory()">🗑️ Limpiar</button>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-icon">⭐</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Limpiar favoritos</div>
+              <div class="settings-item-desc">Elimina todos tus favoritos guardados</div>
+            </div>
+            <button class="settings-btn danger" onclick="clearFavorites()">🗑️ Limpiar</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Sistema</div>
+          <div class="settings-item">
+            <div class="settings-item-icon">📲</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Instalar GameHub</div>
+              <div class="settings-item-desc">Agrega la app a tu pantalla de inicio (PWA)</div>
+            </div>
+            <button class="settings-btn" id="install-settings-btn">Instalar</button>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-icon">🎮</div>
+            <div class="settings-item-info">
+              <div class="settings-item-label">Gamepad</div>
+              <div class="settings-item-desc" id="gamepad-info-text">Sin control detectado</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div style="margin-top:24px;">
+          <div style="font-size:18px;font-weight:800;margin-bottom:16px;">🏆 Logros</div>
+          <div class="achievements-grid" id="achievements-grid"></div>
+        </div>
+
+        <!-- RANKING -->
+        <div style="margin-top:24px;">
+          <div style="font-size:18px;font-weight:800;margin-bottom:16px;">👑 Ranking de uso</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;" id="ranking-list"></div>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="page" id="page-about">
+        <div class="about-hero">
+          <div class="about-logo">🎮</div>
+          <div class="about-name">GameHub</div>
+          <div class="about-version">v2.0.0 • Listo para GitHub Pages</div>
+          <div class="about-desc">Tu portal personalizado de juegos, aplicaciones y herramientas. Un único archivo HTML con todo lo que necesitas.</div>
+          <div class="about-tags">
+            <span class="about-tag">🎮 PWA</span>
+            <span class="about-tag">⚡ Offline</span>
+            <span class="about-tag">🎯 Gamepad</span>
+            <span class="about-tag">💾 IndexedDB</span>
+            <span class="about-tag">🌙 Dark Mode</span>
+            <span class="about-tag">📱 Responsive</span>
+          </div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-group-title">Cómo agregar contenido</div>
+          <div class="settings-item" style="flex-direction:column;align-items:flex-start;gap:8px;">
+            <div style="font-size:14px;font-weight:600;">Edita el arreglo ITEMS</div>
+            <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius3);padding:12px;width:100%;font-family:monospace;font-size:12px;color:var(--accent2);white-space:pre-wrap;overflow-x:auto;">{
+  id: "mi-juego",
+  name: "Mi Juego",
+  description: "Descripción breve",
+  image: "https://url-imagen.jpg",
+  url: "https://url-del-juego.com",
+  category: "Acción",
+  featured: true,
+  type: "game"
+}</div>
+            <div style="font-size:12px;color:var(--text3);">Los tipos válidos son: game, app, tool, website</div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-group-title">Tecnologías usadas</div>
+          <div class="settings-item"><div class="settings-item-icon">💾</div><div class="settings-item-info"><div class="settings-item-label">IndexedDB</div><div class="settings-item-desc">Almacenamiento de favoritos e historial</div></div></div>
+          <div class="settings-item"><div class="settings-item-icon">⚙️</div><div class="settings-item-info"><div class="settings-item-label">Service Worker</div><div class="settings-item-desc">Funcionamiento offline y caché</div></div></div>
+          <div class="settings-item"><div class="settings-item-icon">🎮</div><div class="settings-item-info"><div class="settings-item-label">Gamepad API</div><div class="settings-item-desc">Soporte para controles de juego</div></div></div>
+          <div class="settings-item"><div class="settings-item-icon">🖥️</div><div class="settings-item-info"><div class="settings-item-label">Fullscreen API</div><div class="settings-item-desc">Modo pantalla completa</div></div></div>
+          <div class="settings-item"><div class="settings-item-icon">🔗</div><div class="settings-item-info"><div class="settings-item-label">Web Share API</div><div class="settings-item-desc">Compartir contenido nativo</div></div></div>
+        </div>
+        <div style="text-align:center;padding:20px;color:var(--text3);font-size:12px;">
+          Hecho con ❤️ • Funciona 100% sin servidor • GitHub Pages Ready
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   GAMEHUB — DATOS DE CONTENIDO
+   ▸ Edita este arreglo para agregar tu propio contenido
+   ═══════════════════════════════════════════════════════════════ */
+const ITEMS = [
+  {
+    id: "2048",
+    name: "2048",
+    description: "El clásico juego de números. Combina fichas iguales deslizando el tablero para llegar al 2048.",
+    image: "https://play2048.co/meta/og-image.png",
+    url: "https://play2048.co/",
+    category: "Puzzle",
+    featured: true,
+    type: "game"
+  },
+  {
+    id: "tetris",
+    name: "Tetris Online",
+    description: "Juega al legendario Tetris directamente en tu navegador. Organiza los bloques antes de que la pantalla se llene.",
+    image: "https://tetris.com/sites/default/files/tetris-home-module-art_4.png",
+    url: "https://tetris.com/play-tetris",
+    category: "Clásicos",
+    featured: true,
+    type: "game"
+  },
+  {
+    id: "pacman",
+    name: "Pac-Man",
+    description: "El icónico arcade de los años 80. Come todos los puntos evitando a los fantasmas.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Pac-Man_ghost_icon.svg/1024px-Pac-Man_ghost_icon.svg.png",
+    url: "https://www.google.com/logos/2010/pacman10-i.html",
+    category: "Clásicos",
+    featured: false,
+    type: "game"
+  },
+  {
+    id: "snake",
+    name: "Snake Game",
+    description: "Controla la serpiente y recoge comida sin chocar con las paredes ni contigo mismo.",
+    image: "",
+    url: "https://www.google.com/logos/2013/2013-doodle-4-google-canada-winner.html",
+    category: "Clásicos",
+    featured: false,
+    type: "game"
+  },
+  {
+    id: "chess",
+    name: "Chess.com",
+    description: "El ajedrez más popular del mundo. Juega contra la computadora o contra otros jugadores online.",
+    image: "https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/PedroPinhata/phpkXK09k.png",
+    url: "https://www.chess.com/play/computer",
+    category: "Estrategia",
+    featured: true,
+    type: "game"
+  },
+  {
+    id: "wordle",
+    name: "Wordle",
+    description: "Adivina la palabra de 5 letras en 6 intentos. El viral juego de palabras del New York Times.",
+    image: "",
+    url: "https://www.nytimes.com/games/wordle/index.html",
+    category: "Puzzle",
+    featured: false,
+    type: "game"
+  },
+  {
+    id: "sudoku",
+    name: "Sudoku Online",
+    description: "Juega al sudoku clásico con diferentes niveles de dificultad. Entrena tu mente.",
+    image: "",
+    url: "https://sudoku.com/",
+    category: "Puzzle",
+    featured: false,
+    type: "game"
+  },
+  {
+    id: "excalidraw",
+    name: "Excalidraw",
+    description: "Pizarra colaborativa virtual. Dibuja diagramas y esquemas con estilo hecho a mano.",
+    image: "https://excalidraw.com/og-image.png",
+    url: "https://excalidraw.com/",
+    category: "Dibujo",
+    featured: true,
+    type: "tool"
+  },
+  {
+    id: "tldraw",
+    name: "tldraw",
+    description: "Herramienta de dibujo infinita para el navegador. Perfecta para wireframes y notas visuales.",
+    image: "",
+    url: "https://www.tldraw.com/",
+    category: "Dibujo",
+    featured: false,
+    type: "tool"
+  },
+  {
+    id: "calculator",
+    name: "Calculadora Científica",
+    description: "Calculadora científica avanzada con funciones trigonométricas, logaritmos y más.",
+    image: "",
+    url: "https://web2.0calc.com/",
+    category: "Matemáticas",
+    featured: false,
+    type: "tool"
+  },
+  {
+    id: "codepad",
+    name: "CodePen",
+    description: "Editor de código online para HTML, CSS y JavaScript. Comparte tus creaciones.",
+    image: "https://cpwebassets.codepen.io/assets/social/codepen-share-home-27ca22a93c2dbedc29df6b1ccdfdc3a5fe86773c3e0f15da56e3eeaac4daf5c1.png",
+    url: "https://codepen.io/pen/",
+    category: "Desarrollo",
+    featured: true,
+    type: "app"
+  },
+  {
+    id: "figma",
+    name: "Figma",
+    description: "Herramienta de diseño colaborativo líder en la industria. Diseña interfaces y prototipos.",
+    image: "https://cdn.sanity.io/images/599r6htc/localized-images/45a51c15ef7dd1f8d4c88d79095f4e3e02499a85-2400x1260.png",
+    url: "https://www.figma.com/",
+    category: "Diseño",
+    featured: true,
+    type: "app"
+  },
+  {
+    id: "canva",
+    name: "Canva",
+    description: "Diseña gráficos, presentaciones y más con plantillas profesionales listas para usar.",
+    image: "",
+    url: "https://www.canva.com/",
+    category: "Diseño",
+    featured: false,
+    type: "app"
+  },
+  {
+    id: "notion",
+    name: "Notion",
+    description: "Toma notas, organiza proyectos y crea bases de conocimiento todo en uno.",
+    image: "",
+    url: "https://www.notion.so/",
+    category: "Productividad",
+    featured: false,
+    type: "app"
+  },
+  {
+    id: "pomodoro",
+    name: "Pomodoro Timer",
+    description: "Técnica Pomodoro para aumentar productividad. 25 minutos de trabajo, 5 de descanso.",
+    image: "",
+    url: "https://pomofocus.io/",
+    category: "Productividad",
+    featured: false,
+    type: "tool"
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    description: "La plataforma líder de código. Aloja, revisa y colabora en proyectos de software.",
+    image: "",
+    url: "https://github.com/",
+    category: "Desarrollo",
+    featured: false,
+    type: "website"
+  },
+  {
+    id: "mdn",
+    name: "MDN Web Docs",
+    description: "La referencia definitiva de desarrollo web. Documentación de HTML, CSS, JavaScript y APIs.",
+    image: "",
+    url: "https://developer.mozilla.org/",
+    category: "Desarrollo",
+    featured: false,
+    type: "website"
+  },
+  {
+    id: "kahoot",
+    name: "Kahoot!",
+    description: "Plataforma de aprendizaje basada en juegos. Crea y juega quizzes educativos.",
+    image: "",
+    url: "https://kahoot.com/",
+    category: "Educación",
+    featured: false,
+    type: "app"
+  },
+  {
+    id: "duolingo",
+    name: "Duolingo",
+    description: "Aprende idiomas de forma divertida y gratuita. Lecciones cortas y gamificadas.",
+    image: "",
+    url: "https://www.duolingo.com/",
+    category: "Educación",
+    featured: true,
+    type: "app"
+  },
+  {
+    id: "youtube",
+    name: "YouTube",
+    description: "La plataforma de video más grande del mundo. Mira, sube y comparte videos.",
+    image: "",
+    url: "https://www.youtube.com/",
+    category: "Entretenimiento",
+    featured: false,
+    type: "website"
+  },
+  {
+    id: "wikipedia",
+    name: "Wikipedia",
+    description: "La enciclopedia libre más grande del mundo. Conocimiento para todos.",
+    image: "",
+    url: "https://es.wikipedia.org/",
+    category: "Referencia",
+    featured: false,
+    type: "website"
+  }
+];
+/* ═══════════════════════════════════════════════════════════════
+   FIN DE DATOS — No modificar debajo de esta línea
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── DB ──────────────────────────────────────────────────────── */
+let db;
+const DB_NAME = 'gamehub_db';
+const DB_VERSION = 1;
+
+function openDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('favorites')) d.createObjectStore('favorites', { keyPath: 'id' });
+      if (!d.objectStoreNames.contains('history')) {
+        const hs = d.createObjectStore('history', { keyPath: 'id' });
+        hs.createIndex('lastOpened', 'lastOpened');
+      }
+      if (!d.objectStoreNames.contains('settings')) d.createObjectStore('settings', { keyPath: 'key' });
+      if (!d.objectStoreNames.contains('stats')) d.createObjectStore('stats', { keyPath: 'key' });
+    };
+    req.onsuccess = e => { db = e.target.result; res(db); };
+    req.onerror = rej;
+  });
+}
+function dbGet(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).get(key);
+    req.onsuccess = () => res(req.result);
+    req.onerror = rej;
+  });
+}
+function dbPut(store, val) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).put(val);
+    req.onsuccess = () => res(req.result);
+    req.onerror = rej;
+  });
+}
+function dbDelete(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).delete(key);
+    req.onsuccess = () => res();
+    req.onerror = rej;
+  });
+}
+function dbGetAll(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => res(req.result);
+    req.onerror = rej;
+  });
+}
+function dbClear(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).clear();
+    req.onsuccess = () => res();
+    req.onerror = rej;
+  });
+}
+
+/* ─── STATE ──────────────────────────────────────────────────── */
+let STATE = {
+  page: 'home',
+  favorites: new Set(),
+  history: [],
+  settings: { dark: true, anim: true, sound: false },
+  searchQuery: '',
+  searchFilter: 'all',
+  libTypeFilter: '',
+  libCatFilter: '',
+  libSort: 'default',
+  currentItem: null,
+  heroIndex: 0,
+  heroItems: [],
+  usageTime: 0,
+  sessionStart: Date.now(),
+  gamepad: null,
+  gamepadNavIndex: 0,
+  deferredPrompt: null,
+  achievements: {},
+};
+const ACHIEVEMENTS_DEF = [
+  { id: 'first', name: 'Primer click', desc: 'Abre tu primer contenido', icon: '🚀', condition: h => h.length >= 1 },
+  { id: 'explorer', name: 'Explorador', desc: 'Abre 5 contenidos diferentes', icon: '🗺️', condition: h => h.length >= 5 },
+  { id: 'addict', name: 'Adicto', desc: 'Abre 10 contenidos diferentes', icon: '🔥', condition: h => h.length >= 10 },
+  { id: 'veteran', name: 'Veterano', desc: 'Abre 20 contenidos diferentes', icon: '⚔️', condition: h => h.length >= 20 },
+  { id: 'fav_first', name: 'Coleccionista', desc: 'Agrega tu primer favorito', icon: '⭐', condition: (h, f) => f.size >= 1 },
+  { id: 'fav_five', name: 'Acumulador', desc: '5 favoritos guardados', icon: '💎', condition: (h, f) => f.size >= 5 },
+  { id: 'gamer', name: 'Gamer', desc: 'Abre un juego', icon: '🎮', condition: h => h.some(i => ITEMS.find(x=>x.id===i.id)?.type==='game') },
+  { id: 'developer', name: 'Desarrollador', desc: 'Abre una herramienta', icon: '🔧', condition: h => h.some(i => ITEMS.find(x=>x.id===i.id)?.type==='tool') },
+];
+
+/* ─── UTILS ──────────────────────────────────────────────────── */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const qs = (s, ctx=document) => ctx.querySelector(s);
+
+function getTypeEmoji(type) {
+  return { game:'🎮', app:'📱', tool:'🔧', website:'🌐' }[type] || '📦';
+}
+function getCategoryEmoji(cat) {
+  const map = {
+    'Puzzle':'🧩','Clásicos':'🕹️','Estrategia':'♟️','Acción':'⚡','Dibujo':'🎨',
+    'Matemáticas':'🔢','Desarrollo':'💻','Diseño':'✏️','Productividad':'⏱️',
+    'Educación':'📚','Entretenimiento':'🎬','Referencia':'📖','Ciencia':'🔬',
+    'Música':'🎵','Deportes':'⚽','Aventura':'🗺️'
+  };
+  return map[cat] || '📂';
+}
+function formatDate(ts) {
+  const d = new Date(ts);
+  return d.toLocaleDateString('es', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+function formatTime(ms) {
+  const s = Math.floor(ms/1000), m = Math.floor(s/60), h = Math.floor(m/60);
+  if (h > 0) return `${h}h ${m%60}m`;
+  if (m > 0) return `${m}m`;
+  return `${s}s`;
+}
+function imgOrPlaceholder(item, size=40) {
+  const emoji = getTypeEmoji(item.type);
+  if (item.image) {
+    return `<img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*0.5)}px;\\'>${emoji}</div>'" style="width:100%;height:100%;object-fit:cover;">`;
+  }
+  return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*0.5)}px;">${emoji}</div>`;
+}
+function typeBadgeClass(type) {
+  return `card-type-badge card-type-${type}`;
+}
+function typeLabel(type) {
+  return { game:'Juego', app:'App', tool:'Tool', website:'Web' }[type] || type;
+}
+
+/* ─── SOUNDS ──────────────────────────────────────────────────── */
+let AudioCtx;
+function playSound(type) {
+  if (!STATE.settings.sound) return;
+  try {
+    if (!AudioCtx) AudioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = AudioCtx.createOscillator();
+    const g = AudioCtx.createGain();
+    o.connect(g); g.connect(AudioCtx.destination);
+    const freqs = { click:440, open:660, fav:880, back:220 };
+    o.frequency.value = freqs[type]||440;
+    o.type = 'sine';
+    g.gain.setValueAtTime(0.1, AudioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, AudioCtx.currentTime+0.15);
+    o.start(); o.stop(AudioCtx.currentTime+0.15);
+  } catch(e){}
+}
+
+/* ─── TOAST ──────────────────────────────────────────────────── */
+function showToast(msg, icon='ℹ️') {
+  const c = $('#toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+
+/* ─── NOTIFICATION ─────────────────────────────────────────────── */
+function showNotif(title, body) {
+  const n = document.createElement('div');
+  n.className = 'notif-badge';
+  n.innerHTML = `<div class="notif-title">${title}</div><div class="notif-body">${body}</div>`;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 4500);
+}
+
+/* ─── PROGRESS BAR ─────────────────────────────────────────────── */
+function showProgress(pct) {
+  const bar = $('#progress-bar');
+  bar.style.width = pct+'%';
+  if (pct >= 100) setTimeout(() => { bar.style.width = '0'; }, 400);
+}
+
+/* ─── NAVIGATION ─────────────────────────────────────────────── */
+function navigateTo(page) {
+  if (STATE.page === page) return;
+  STATE.page = page;
+  $$('.page').forEach(p => p.classList.remove('active'));
+  $$('.nav-item').forEach(n => n.classList.remove('active'));
+  const pageEl = $(`#page-${page}`);
+  if (pageEl) pageEl.classList.add('active');
+  const navEl = $(`.nav-item[data-page="${page}"]`);
+  if (navEl) navEl.classList.add('active');
+  const titles = {
+    home:'Inicio', library:'Biblioteca', favorites:'Favoritos',
+    history:'Historial', search:'Buscar', categories:'Categorías',
+    settings:'Configuración', about:'Acerca de'
+  };
+  $('#page-title').textContent = titles[page] || page;
+  $('#content').scrollTo(0, 0);
+  closeSidebar();
+  playSound('click');
+  // Refresh page content
+  if (page === 'favorites') renderFavorites();
+  if (page === 'history') renderHistory();
+  if (page === 'categories') renderCategories();
+  if (page === 'settings') renderSettings();
+  if (page === 'library') renderLibrary();
+  if (page === 'search') { renderSearch(); setTimeout(() => $('#main-search')?.focus(), 100); }
+}
+function closeSidebar() {
+  $('#sidebar').classList.remove('open');
+  $('#sidebar-overlay').classList.remove('show');
+}
+
+/* ─── PLAYER ──────────────────────────────────────────────────── */
+async function openItem(item) {
+  STATE.currentItem = item;
+  const modal = $('#player-modal');
+  const frame = $('#player-frame');
+  const loader = $('#player-loader');
+  const title = $('#player-title');
+  const infoPan = $('#player-info-panel');
+
+  modal.classList.add('open');
+  infoPan.classList.remove('open');
+  loader.style.display = 'flex';
+  frame.style.display = 'none';
+  title.textContent = item.name;
+
+  // Fav state
+  updatePlayerFavBtn();
+
+  // Info panel
+  $('#player-info-thumb').textContent = getTypeEmoji(item.type);
+  if (item.image) {
+    $('#player-info-img').innerHTML = `<img src="${item.image}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);">`;
+  }
+  $('#player-info-name').textContent = item.name;
+  $('#player-info-type-badge').innerHTML = `<span class="${typeBadgeClass(item.type)}" style="position:static;display:inline-block;">${typeLabel(item.type)}</span>`;
+  $('#player-info-cat').textContent = `📂 ${item.category}`;
+  $('#player-info-desc').textContent = item.description;
+
+  showProgress(30);
+  frame.onload = () => {
+    loader.style.display = 'none';
+    frame.style.display = 'block';
+    showProgress(100);
+  };
+  frame.src = item.url;
+
+  // History
+  await addToHistory(item);
+  await checkAchievements();
+  playSound('open');
+}
+function updatePlayerFavBtn() {
+  const btn = $('#player-fav-btn');
+  if (!btn || !STATE.currentItem) return;
+  btn.classList.toggle('active', STATE.favorites.has(STATE.currentItem.id));
+}
+function closePlayer() {
+  const modal = $('#player-modal');
+  modal.classList.remove('open');
+  $('#player-frame').src = '';
+  STATE.currentItem = null;
+  playSound('back');
+}
+
+/* ─── HISTORY ──────────────────────────────────────────────────── */
+async function addToHistory(item) {
+  const existing = await dbGet('history', item.id);
+  const entry = {
+    id: item.id,
+    name: item.name,
+    image: item.image,
+    type: item.type,
+    category: item.category,
+    plays: (existing?.plays || 0) + 1,
+    lastOpened: Date.now(),
+    firstOpened: existing?.firstOpened || Date.now()
+  };
+  await dbPut('history', entry);
+  STATE.history = await dbGetAll('history');
+  STATE.history.sort((a,b) => b.lastOpened - a.lastOpened);
+  updateFavBadge();
+
+  // Update info panel plays
+  const item2 = await dbGet('history', item.id);
+  if ($('#player-info-plays')) {
+    $('#player-info-plays').textContent = `▶ Abierto ${item2?.plays || 1} ${item2?.plays===1?'vez':'veces'}`;
+  }
+}
+async function clearHistory() {
+  if (!confirm('¿Limpiar todo el historial?')) return;
+  await dbClear('history');
+  STATE.history = [];
+  renderHistory();
+  renderHome();
+  showToast('Historial eliminado', '🗑️');
+}
+
+/* ─── FAVORITES ─────────────────────────────────────────────────── */
+async function toggleFavorite(id) {
+  if (STATE.favorites.has(id)) {
+    STATE.favorites.delete(id);
+    await dbDelete('favorites', id);
+    showToast('Eliminado de favoritos', '💔');
+  } else {
+    STATE.favorites.add(id);
+    const item = ITEMS.find(i => i.id === id);
+    if (item) await dbPut('favorites', { id, name: item.name, image: item.image, type: item.type, category: item.category });
+    showToast('Agregado a favoritos', '⭐');
+  }
+  updateFavBadge();
+  updatePlayerFavBtn();
+  await checkAchievements();
+  playSound('fav');
+  $$(`[data-fav="${id}"]`).forEach(b => b.classList.toggle('active', STATE.favorites.has(id)));
+}
+async function clearFavorites() {
+  if (!confirm('¿Eliminar todos los favoritos?')) return;
+  await dbClear('favorites');
+  STATE.favorites.clear();
+  updateFavBadge();
+  renderFavorites();
+  showToast('Favoritos eliminados', '🗑️');
+}
+function updateFavBadge() {
+  $('#fav-badge').textContent = STATE.favorites.size;
+  if ($('#fav-badge').textContent === '0') $('#fav-badge').style.display = 'none';
+  else $('#fav-badge').style.display = 'flex';
+}
+
+/* ─── CARD BUILDERS ─────────────────────────────────────────── */
+function buildCard(item, size='medium') {
+  const isFav = STATE.favorites.has(item.id);
+  return `
+  <div class="card ${size}" onclick="openItem(${JSON.stringify(item).replace(/"/g,'&quot;')})" tabindex="0" role="button" aria-label="Abrir ${item.name}">
+    <div class="card-img">
+      <div class="card-img-inner">${imgOrPlaceholder(item,120)}</div>
+      <span class="${typeBadgeClass(item.type)}">${typeLabel(item.type)}</span>
+      <button class="card-fav-btn ${isFav?'active':''}" data-fav="${item.id}" onclick="event.stopPropagation();toggleFavorite('${item.id}')" title="Favorito" aria-label="Favorito">
+        ${isFav?'⭐':'☆'}
+      </button>
+    </div>
+    <div class="card-body">
+      <div class="card-name">${item.name}</div>
+      <div class="card-meta">
+        <span class="card-cat">${getCategoryEmoji(item.category)} ${item.category}</span>
+      </div>
+      <div class="card-desc">${item.description}</div>
+    </div>
+  </div>`;
+}
+function buildLibraryCard(item) {
+  const isFav = STATE.favorites.has(item.id);
+  return `
+  <div class="library-card" onclick="openItem(${JSON.stringify(item).replace(/"/g,'&quot;')})" tabindex="0" role="button">
+    <div class="lc-img-wrap">
+      ${item.image
+        ? `<img class="lc-img" src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="lc-img-placeholder" style="display:none;">${getTypeEmoji(item.type)}</div>`
+        : `<div class="lc-img-placeholder">${getTypeEmoji(item.type)}</div>`}
+      <span class="${typeBadgeClass(item.type)}" style="position:absolute;top:8px;left:8px;">${typeLabel(item.type)}</span>
+    </div>
+    <div class="lc-body">
+      <div class="lc-name">${item.name}</div>
+      <div class="lc-meta">
+        <span>${getCategoryEmoji(item.category)} ${item.category}</span>
+      </div>
+      <div class="lc-desc">${item.description}</div>
+      <div class="lc-footer">
+        <button class="lc-open-btn">▶ Abrir</button>
+        <button class="lc-fav-btn ${isFav?'active':''}" data-fav="${item.id}" onclick="event.stopPropagation();toggleFavorite('${item.id}')" title="Favorito">
+          ${isFav?'⭐':'☆'}
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ─── RENDER HOME ─────────────────────────────────────────────── */
+function renderHome() {
+  renderHero();
+  // Stats
+  $('#stat-total').textContent = ITEMS.length;
+  $('#stat-games').textContent = ITEMS.filter(i=>i.type==='game').length;
+  $('#stat-apps').textContent = ITEMS.filter(i=>i.type==='app').length;
+  $('#stat-tools').textContent = ITEMS.filter(i=>i.type==='tool').length;
+  updateTimeStats();
+  // Featured
+  const featured = ITEMS.filter(i=>i.featured);
+  $('#featured-row').innerHTML = featured.map(i=>buildCard(i,'large')).join('');
+  // Recent (last 8)
+  const recent = [...ITEMS].reverse().slice(0,8);
+  $('#recent-row').innerHTML = recent.map(i=>buildCard(i,'medium')).join('');
+  // Most played
+  renderMostPlayed();
+  // Categories
+  const cats = [...new Set(ITEMS.map(i=>i.category))];
+  $('#home-cats').innerHTML = cats.map(c=>`<div class="cat-pill" onclick="goToCat('${c}')">${getCategoryEmoji(c)} ${c}</div>`).join('');
+  // Recommendations
+  renderRecommendations();
+}
+function goToCat(cat) {
+  STATE.libCatFilter = cat;
+  navigateTo('categories');
+}
+function updateTimeStats() {
+  const elapsed = Date.now() - STATE.sessionStart + STATE.usageTime;
+  $('#stat-time').textContent = formatTime(elapsed);
+}
+function renderMostPlayed() {
+  if (!STATE.history.length) { $('#most-played-section').style.display='none'; return; }
+  $('#most-played-section').style.display='';
+  const top = [...STATE.history].sort((a,b)=>b.plays-a.plays).slice(0,5);
+  const max = top[0]?.plays||1;
+  $('#most-played-list').innerHTML = top.map((h,i)=>{
+    const item = ITEMS.find(x=>x.id===h.id);
+    const pct = Math.round((h.plays/max)*100);
+    return `<div class="ranking-item" onclick="item&&openItem(item)" style="cursor:pointer;padding:12px;">
+      <div class="ranking-num ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i+1}</div>
+      <div class="ranking-thumb">${imgOrPlaceholder({image:h.image,type:h.type||'game'},32)}</div>
+      <div class="ranking-info">
+        <div class="ranking-name">${h.name}</div>
+        <div class="time-bar-wrap"><div class="time-bar" style="width:${pct}%"></div></div>
+        <div class="ranking-plays" style="margin-top:4px;">${h.plays} ${h.plays===1?'vez':'veces'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderRecommendations() {
+  const recs = getRecommendations();
+  if (!recs.length) { $('#recs-section').style.display='none'; return; }
+  $('#recs-section').style.display='';
+  $('#recs-list').innerHTML = recs.map(({item,reason})=>`
+    <div class="rec-item" onclick="openItem(${JSON.stringify(item).replace(/"/g,'&quot;')})">
+      <div class="rec-thumb">${imgOrPlaceholder(item,24)}</div>
+      <div>
+        <div class="rec-name">${item.name}</div>
+        <div class="rec-reason">${reason}</div>
+      </div>
+      <button class="lc-open-btn" style="flex-shrink:0;font-size:11px;padding:5px 10px;">▶</button>
+    </div>`).join('');
+}
+function getRecommendations() {
+  if (!STATE.history.length) {
+    return ITEMS.filter(i=>i.featured).slice(0,3).map(item=>({item,reason:'⭐ Destacado'}));
+  }
+  const playedIds = new Set(STATE.history.map(h=>h.id));
+  const playedCats = STATE.history.map(h=>ITEMS.find(i=>i.id===h.id)?.category).filter(Boolean);
+  const catFreq = {};
+  playedCats.forEach(c=>catFreq[c]=(catFreq[c]||0)+1);
+  const topCat = Object.entries(catFreq).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const recs = [];
+  if (topCat) {
+    ITEMS.filter(i=>i.category===topCat&&!playedIds.has(i.id)).slice(0,2).forEach(item=>recs.push({item,reason:`📂 Similar a lo que te gusta (${topCat})`}));
+  }
+  ITEMS.filter(i=>i.featured&&!playedIds.has(i.id)).slice(0,2).forEach(item=>{
+    if(!recs.find(r=>r.item.id===item.id)) recs.push({item,reason:'⭐ Destacado para ti'});
+  });
+  return recs.slice(0,4);
+}
+
+/* ─── HERO ──────────────────────────────────────────────────────── */
+function renderHero() {
+  STATE.heroItems = ITEMS.filter(i=>i.featured).slice(0,6);
+  if (!STATE.heroItems.length) STATE.heroItems = ITEMS.slice(0,4);
+  const slides = $('#hero-slides');
+  const dots = $('#hero-dots');
+  slides.innerHTML = STATE.heroItems.map((item,idx)=>`
+    <div class="hero-slide" data-idx="${idx}">
+      <div class="hero-bg" style="background-image:url('${item.image||''}');background-color:${['#1a0a30','#0a1a30','#1a1a0a','#300a1a'][idx%4]}"></div>
+      <div class="hero-gradient"></div>
+      <div class="hero-content">
+        <div class="hero-badge">${getTypeEmoji(item.type)} ${typeLabel(item.type)}</div>
+        <div class="hero-title">${item.name}</div>
+        <div class="hero-desc">${item.description.slice(0,100)}${item.description.length>100?'...':''}</div>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="openItem(${JSON.stringify(item).replace(/"/g,'&quot;')})">▶ Abrir ahora</button>
+          <button class="btn-secondary" onclick="toggleFavorite('${item.id}')">⭐ Favorito</button>
+        </div>
+      </div>
+    </div>`).join('');
+  dots.innerHTML = STATE.heroItems.map((_,i)=>`<div class="hero-dot${i===0?' active':''}" onclick="goHero(${i})"></div>`).join('');
+  goHero(0);
+}
+function goHero(idx) {
+  STATE.heroIndex = idx;
+  const slides = $('#hero-slides');
+  const dotEls = $$('.hero-dot');
+  slides.style.transform = `translateX(-${idx*100}%)`;
+  dotEls.forEach((d,i)=>d.classList.toggle('active',i===idx));
+}
+let heroInterval;
+function startHeroAuto() {
+  heroInterval = setInterval(()=>{
+    const next = (STATE.heroIndex+1) % Math.max(1, STATE.heroItems.length);
+    goHero(next);
+  },5000);
+}
+$('#hero-prev')?.addEventListener('click',()=>{ clearInterval(heroInterval); goHero((STATE.heroIndex-1+STATE.heroItems.length)%Math.max(1,STATE.heroItems.length)); startHeroAuto(); });
+$('#hero-next')?.addEventListener('click',()=>{ clearInterval(heroInterval); goHero((STATE.heroIndex+1)%Math.max(1,STATE.heroItems.length)); startHeroAuto(); });
+
+/* ─── RENDER LIBRARY ─────────────────────────────────────────── */
+function renderLibrary() {
+  let items = [...ITEMS];
+  if (STATE.libTypeFilter) items = items.filter(i=>i.type===STATE.libTypeFilter);
+  if (STATE.libCatFilter) items = items.filter(i=>i.category===STATE.libCatFilter);
+  if (STATE.libSort === 'name') items.sort((a,b)=>a.name.localeCompare(b.name));
+  if (STATE.libSort === 'plays') {
+    const playMap = {};
+    STATE.history.forEach(h=>playMap[h.id]=h.plays);
+    items.sort((a,b)=>(playMap[b.id]||0)-(playMap[a.id]||0));
+  }
+  $('#lib-count').textContent = `${items.length} elemento${items.length!==1?'s':''}`;
+  $('#library-grid').innerHTML = items.map(i=>buildLibraryCard(i)).join('');
+  // Populate category filter
+  const cats = [...new Set(ITEMS.map(i=>i.category))].sort();
+  const catSel = $('#lib-cat-filter');
+  const curVal = catSel.value;
+  catSel.innerHTML = '<option value="">Todas las categorías</option>' + cats.map(c=>`<option value="${c}" ${c===curVal?'selected':''}>${getCategoryEmoji(c)} ${c}</option>`).join('');
+  if (curVal && cats.includes(curVal)) catSel.value = curVal;
+}
+
+/* ─── RENDER SEARCH ─────────────────────────────────────────── */
+function renderSearch() {
+  const q = STATE.searchQuery.toLowerCase().trim();
+  const f = STATE.searchFilter;
+  let items = ITEMS;
+  if (f !== 'all') items = items.filter(i=>i.type===f);
+  if (q) items = items.filter(i=>
+    i.name.toLowerCase().includes(q)||
+    i.description.toLowerCase().includes(q)||
+    i.category.toLowerCase().includes(q)
+  );
+  const count = items.length;
+  const el = $('#search-results-count');
+  if (q) el.textContent = `${count} resultado${count!==1?'s':''} para "${STATE.searchQuery}"`;
+  else el.textContent = q ? '' : `${ITEMS.length} elementos en total`;
+  $('#search-results-grid').innerHTML = items.map(i=>buildLibraryCard(i)).join('');
+  $('#search-empty').style.display = (!items.length && q) ? 'flex' : 'none';
+}
+
+/* ─── RENDER FAVORITES ─────────────────────────────────────── */
+async function renderFavorites() {
+  const favs = await dbGetAll('favorites');
+  const items = favs.map(f=>ITEMS.find(i=>i.id===f.id)).filter(Boolean);
+  if (!items.length) {
+    $('#fav-empty').style.display = 'flex';
+    $('#favorites-grid').innerHTML = '';
+  } else {
+    $('#fav-empty').style.display = 'none';
+    $('#favorites-grid').innerHTML = items.map(i=>buildLibraryCard(i)).join('');
+  }
+}
+
+/* ─── RENDER HISTORY ─────────────────────────────────────────── */
+async function renderHistory() {
+  STATE.history = await dbGetAll('history');
+  STATE.history.sort((a,b)=>b.lastOpened-a.lastOpened);
+  const list = $('#history-list');
+  if (!STATE.history.length) {
+    $('#history-empty').style.display='flex';
+    list.innerHTML='';
+    $('#history-count').textContent='';
+    return;
+  }
+  $('#history-empty').style.display='none';
+  $('#history-count').textContent = `${STATE.history.length} elemento${STATE.history.length!==1?'s':''}`;
+  list.innerHTML = STATE.history.map(h=>{
+    const item = ITEMS.find(i=>i.id===h.id);
+    return `<div class="history-item" onclick="${item?`openItem(${JSON.stringify(item).replace(/"/g,'&quot;')})`:''}">
+      <div class="history-thumb">${imgOrPlaceholder({image:h.image,type:h.type||'game'},36)}</div>
+      <div class="history-info">
+        <div class="history-name">${h.name}</div>
+        <div class="history-meta">
+          <span>📂 ${h.category||'Sin categoría'}</span>
+          <span>🕐 ${formatDate(h.lastOpened)}</span>
+        </div>
+      </div>
+      <div class="history-plays">▶ ${h.plays}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── RENDER CATEGORIES ─────────────────────────────────────── */
+function renderCategories() {
+  const cats = [...new Set(ITEMS.map(i=>i.category))].sort();
+  const el = $('#categories-content');
+  el.innerHTML = cats.map(cat=>{
+    const catItems = ITEMS.filter(i=>i.category===cat);
+    return `<div class="cat-section">
+      <div class="cat-section-title">${getCategoryEmoji(cat)} ${cat} <span style="font-size:13px;color:var(--text3);font-weight:400;">(${catItems.length})</span></div>
+      <div class="cards-row">${catItems.map(i=>buildCard(i,'medium')).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── RENDER SETTINGS ─────────────────────────────────────────── */
+async function renderSettings() {
+  // Achievements
+  const histAll = await dbGetAll('history');
+  const grid = $('#achievements-grid');
+  grid.innerHTML = ACHIEVEMENTS_DEF.map(a=>{
+    const unlocked = STATE.achievements[a.id];
+    return `<div class="achievement ${unlocked?'unlocked':''}">
+      ${!unlocked?'<div class="achievement-lock">🔒</div>':''}
+      <div class="achievement-icon" style="${!unlocked?'filter:grayscale(1);opacity:0.4':''}">${a.icon}</div>
+      <div class="achievement-name">${a.name}</div>
+      <div class="achievement-desc">${a.desc}</div>
+    </div>`;
+  }).join('');
+  // Ranking
+  const sorted = [...STATE.history].sort((a,b)=>b.plays-a.plays).slice(0,10);
+  const rankEl = $('#ranking-list');
+  if (!sorted.length) { rankEl.innerHTML='<div style="text-align:center;color:var(--text3);padding:20px;">Sin datos aún</div>'; return; }
+  rankEl.innerHTML = sorted.map((h,i)=>`
+    <div class="ranking-item">
+      <div class="ranking-num ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i+1}</div>
+      <div class="ranking-thumb">${imgOrPlaceholder({image:h.image,type:h.type||'game'},28)}</div>
+      <div class="ranking-info">
+        <div class="ranking-name">${h.name}</div>
+        <div class="ranking-plays">${h.plays} ${h.plays===1?'vez':'veces'} • Último: ${formatDate(h.lastOpened)}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ─── ACHIEVEMENTS ─────────────────────────────────────────────── */
+async function checkAchievements() {
+  const hist = await dbGetAll('history');
+  for (const a of ACHIEVEMENTS_DEF) {
+    if (!STATE.achievements[a.id]) {
+      const unlocked = a.condition(hist, STATE.favorites);
+      if (unlocked) {
+        STATE.achievements[a.id] = true;
+        await dbPut('settings', { key: `ach_${a.id}`, value: true });
+        showNotif(`🏆 Logro desbloqueado`, `${a.icon} ${a.name}: ${a.desc}`);
+      }
+    }
+  }
+}
+
+/* ─── EXPORT / IMPORT ─────────────────────────────────────────── */
+async function exportData() {
+  const favs = await dbGetAll('favorites');
+  const hist = await dbGetAll('history');
+  const data = { favorites: favs, history: hist, exported: new Date().toISOString(), version: '2.0' };
+  const blob = new Blob([JSON.stringify(data,null,2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `gamehub-backup-${Date.now()}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Datos exportados', '📤');
+}
+async function importData() {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = '.json';
+  inp.onchange = async e => {
+    const file = e.target.files[0]; if (!file) return;
+    const text = await file.text();
+    try {
+      const data = JSON.parse(text);
+      if (data.favorites) for (const f of data.favorites) await dbPut('favorites', f);
+      if (data.history) for (const h of data.history) await dbPut('history', h);
+      STATE.favorites = new Set((await dbGetAll('favorites')).map(f=>f.id));
+      STATE.history = await dbGetAll('history');
+      updateFavBadge();
+      showToast('Datos importados correctamente', '📥');
+    } catch(err) { showToast('Error al importar', '❌'); }
+  };
+  inp.click();
+}
+
+/* ─── SETTINGS CONTROLS ─────────────────────────────────────── */
+$('#toggle-dark')?.addEventListener('change', e => {
+  STATE.settings.dark = e.target.checked;
+  document.body.setAttribute('data-theme', STATE.settings.dark ? 'dark' : 'light');
+  dbPut('settings', { key:'dark', value:STATE.settings.dark });
+});
+$('#toggle-anim')?.addEventListener('change', e => {
+  STATE.settings.anim = e.target.checked;
+  document.body.setAttribute('data-animations', String(e.target.checked));
+  dbPut('settings', { key:'anim', value:STATE.settings.anim });
+});
+$('#toggle-sound')?.addEventListener('change', e => {
+  STATE.settings.sound = e.target.checked;
+  dbPut('settings', { key:'sound', value:STATE.settings.sound });
+});
+async function loadSettings() {
+  const dark = await dbGet('settings','dark');
+  const anim = await dbGet('settings','anim');
+  const sound = await dbGet('settings','sound');
+  if (dark !== undefined) {
+    STATE.settings.dark = dark.value;
+    $('#toggle-dark').checked = dark.value;
+    document.body.setAttribute('data-theme', dark.value?'dark':'light');
+  }
+  if (anim !== undefined) {
+    STATE.settings.anim = anim.value;
+    $('#toggle-anim').checked = anim.value;
+  }
+  if (sound !== undefined) {
+    STATE.settings.sound = sound.value;
+    $('#toggle-sound').checked = sound.value;
+  }
+  // Load achievements
+  for (const a of ACHIEVEMENTS_DEF) {
+    const r = await dbGet('settings', `ach_${a.id}`);
+    if (r?.value) STATE.achievements[a.id] = true;
+  }
+  // Usage time
+  const ut = await dbGet('stats', 'usageTime');
+  if (ut) STATE.usageTime = ut.value || 0;
+}
+
+/* ─── PLAYER CONTROLS ─────────────────────────────────────────── */
+$('#player-back')?.addEventListener('click', closePlayer);
+$('#player-fav-btn')?.addEventListener('click', () => {
+  if (STATE.currentItem) toggleFavorite(STATE.currentItem.id);
+});
+$('#player-info-btn')?.addEventListener('click', () => {
+  const panel = $('#player-info-panel');
+  panel.classList.toggle('open');
+});
+$('#player-share-btn')?.addEventListener('click', () => {
+  if (!STATE.currentItem) return;
+  if (navigator.share) {
+    navigator.share({ title: STATE.currentItem.name, url: STATE.currentItem.url }).catch(()=>{});
+  } else {
+    navigator.clipboard?.writeText(STATE.currentItem.url);
+    showToast('URL copiada', '🔗');
+  }
+});
+$('#player-fs-btn')?.addEventListener('click', () => {
+  const frame = $('#player-frame');
+  if (document.fullscreenElement) document.exitFullscreen();
+  else frame.requestFullscreen?.().catch(()=>{
+    $('#player-modal').requestFullscreen?.();
+  });
+});
+
+/* ─── TOPBAR CONTROLS ─────────────────────────────────────────── */
+$('#menu-btn')?.addEventListener('click', () => {
+  $('#sidebar').classList.toggle('open');
+  $('#sidebar-overlay').classList.toggle('show');
+});
+$('#sidebar-overlay')?.addEventListener('click', closeSidebar);
+$$('.nav-item').forEach(item => {
+  item.addEventListener('click', () => navigateTo(item.dataset.page));
+  item.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') navigateTo(item.dataset.page); });
+});
+$('#fullscreen-toggle-btn')?.addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen?.();
+});
+$('#notify-btn')?.addEventListener('click', () => {
+  showNotif('🎮 GameHub', 'Notificaciones funcionando correctamente');
+});
+
+/* ─── SEARCH ─────────────────────────────────────────────────── */
+let searchDebounce;
+$('#topbar-search')?.addEventListener('input', e => {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => {
+    STATE.searchQuery = e.target.value;
+    if (e.target.value.trim()) { navigateTo('search'); $('#main-search').value=e.target.value; renderSearch(); }
+  }, 200);
+});
+$('#main-search')?.addEventListener('input', e => {
+  STATE.searchQuery = e.target.value;
+  $('#search-clear').style.display = e.target.value ? 'block' : 'none';
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(renderSearch, 150);
+});
+$('#search-clear')?.addEventListener('click', () => {
+  STATE.searchQuery = ''; $('#main-search').value='';
+  $('#search-clear').style.display='none';
+  renderSearch();
+});
+$$('.search-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $$('.search-filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    STATE.searchFilter = btn.dataset.filter;
+    renderSearch();
+  });
+});
+$('#lib-type-filter')?.addEventListener('change', e => { STATE.libTypeFilter=e.target.value; renderLibrary(); });
+$('#lib-cat-filter')?.addEventListener('change', e => { STATE.libCatFilter=e.target.value; renderLibrary(); });
+$('#lib-sort')?.addEventListener('change', e => { STATE.libSort=e.target.value; renderLibrary(); });
+
+/* ─── KEYBOARD NAVIGATION ─────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if ($('#player-modal.open')) {
+    if (e.key === 'Escape') closePlayer();
+    if (e.key === 'f' || e.key === 'F') $('#player-fs-btn')?.click();
+    if (e.key === 'i' || e.key === 'I') $('#player-info-btn')?.click();
+  } else {
+    if (e.key === 'Escape') closeSidebar();
+    if (e.key === '/' || e.key === 's') { e.preventDefault(); navigateTo('search'); }
+    if (e.key === 'h') navigateTo('home');
+    if (e.key === 'l') navigateTo('library');
+  }
+});
+
+/* ─── GAMEPAD API ────────────────────────────────────────────── */
+let gamepadRAF;
+let gpNavItems = [];
+let gpFocusIdx = 0;
+window.addEventListener('gamepadconnected', e => {
+  STATE.gamepad = e.gamepad;
+  $('#gamepad-dot').classList.add('connected');
+  $('#gamepad-text').textContent = e.gamepad.id.slice(0,20);
+  $('#gamepad-info-text').textContent = e.gamepad.id.slice(0,30);
+  $('#gamepad-indicator').classList.add('show');
+  showToast('Control conectado 🎮', '🎮');
+  setTimeout(()=>$('#gamepad-indicator').classList.remove('show'),4000);
+  gamepadLoop();
+});
+window.addEventListener('gamepaddisconnected', () => {
+  STATE.gamepad = null;
+  $('#gamepad-dot').classList.remove('connected');
+  $('#gamepad-text').textContent = 'Sin control';
+  $('#gamepad-info-text').textContent = 'Sin control detectado';
+  cancelAnimationFrame(gamepadRAF);
+  showToast('Control desconectado', '🎮');
+});
+let gpBtnState = {};
+function gamepadLoop() {
+  const gamepads = navigator.getGamepads();
+  const gp = gamepads[0];
+  if (!gp) { gamepadRAF = requestAnimationFrame(gamepadLoop); return; }
+  const pressed = (i) => gp.buttons[i]?.pressed;
+  const wasPressed = (i) => !gpBtnState[i] && pressed(i);
+  // D-pad / left stick navigation
+  const axisX = gp.axes[0]||0;
+  const axisY = gp.axes[1]||0;
+  const navItems = Array.from($$('.nav-item'));
+  if (wasPressed(12) || axisY < -0.7) { // Up
+    if (!gpBtnState['up']) {
+      gpBtnState['up'] = true;
+      gpFocusIdx = Math.max(0, gpFocusIdx-1);
+      navItems[gpFocusIdx]?.focus();
+    }
+  } else { gpBtnState['up'] = false; }
+  if (wasPressed(13) || axisY > 0.7) { // Down
+    if (!gpBtnState['down']) {
+      gpBtnState['down'] = true;
+      gpFocusIdx = Math.min(navItems.length-1, gpFocusIdx+1);
+      navItems[gpFocusIdx]?.focus();
+    }
+  } else { gpBtnState['down'] = false; }
+  if (wasPressed(0)) { // A button - confirm
+    if (!gpBtnState[0]) {
+      gpBtnState[0] = true;
+      navItems[gpFocusIdx]?.click();
+    }
+  } else { gpBtnState[0] = false; }
+  if (wasPressed(1)) { // B button - back
+    if (!gpBtnState[1]) {
+      gpBtnState[1] = true;
+      if ($('#player-modal.open')) closePlayer();
+      else if ($('#sidebar').classList.contains('open')) closeSidebar();
+    }
+  } else { gpBtnState[1] = false; }
+  if (wasPressed(8) || wasPressed(9)) { // Select/Start
+    if (!gpBtnState['start']) {
+      gpBtnState['start'] = true;
+      $('#menu-btn')?.click();
+    }
+  } else { gpBtnState['start'] = false; }
+  gamepadRAF = requestAnimationFrame(gamepadLoop);
+}
+
+/* ─── FULLSCREEN ─────────────────────────────────────────────── */
+document.addEventListener('fullscreenchange', () => {
+  const btn = $('#fullscreen-toggle-btn');
+  if (btn) btn.textContent = document.fullscreenElement ? '⊡' : '⛶';
+});
+
+/* ─── PWA ─────────────────────────────────────────────────────── */
+function generateManifest() {
+  const manifest = {
+    name: 'GameHub',
+    short_name: 'GameHub',
+    description: 'Tu portal de juegos, apps y herramientas',
+    start_url: './',
+    display: 'standalone',
+    theme_color: '#0a0a14',
+    background_color: '#0a0a14',
+    icons: [
+      { src: 'https://via.placeholder.com/192x192/6c63ff/ffffff?text=GH', sizes: '192x192', type: 'image/png' },
+      { src: 'https://via.placeholder.com/512x512/6c63ff/ffffff?text=GH', sizes: '512x512', type: 'image/png' }
+    ],
+    categories: ['games', 'entertainment'],
+    shortcuts: [
+      { name: 'Biblioteca', url: './#library', description: 'Ver toda la biblioteca' },
+      { name: 'Buscar', url: './#search', description: 'Buscar contenido' }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  $('#manifest-link').href = url;
+  $('#manifest-link').rel = 'manifest';
+}
+function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  const swCode = `
+const CACHE = 'gamehub-v1';
+const ASSETS = ['./'];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(()=>self.skipWaiting()));
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+});
+self.addEventListener('fetch', e => {
+  if(e.request.method!=='GET')return;
+  e.respondWith(
+    caches.match(e.request).then(cached=>{
+      const fetchP=fetch(e.request).then(r=>{
+        if(r&&r.status===200&&e.request.url.startsWith(self.location.origin)){
+          const clone=r.clone();
+          caches.open(CACHE).then(c=>c.put(e.request,clone));
+        }
+        return r;
+      }).catch(()=>cached);
+      return cached||fetchP;
+    })
+  );
+});`;
+  const blob = new Blob([swCode], { type:'text/javascript' });
+  const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(()=>{});
+}
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  STATE.deferredPrompt = e;
+  $('#install-banner').classList.add('show');
+});
+$('#install-dismiss')?.addEventListener('click', () => {
+  $('#install-banner').classList.remove('show');
+});
+$('#install-btn')?.addEventListener('click', async () => {
+  if (!STATE.deferredPrompt) return;
+  STATE.deferredPrompt.prompt();
+  const { outcome } = await STATE.deferredPrompt.userChoice;
+  if (outcome === 'accepted') showToast('GameHub instalado ✓', '📲');
+  STATE.deferredPrompt = null;
+  $('#install-banner').classList.remove('show');
+});
+$('#install-settings-btn')?.addEventListener('click', () => {
+  if (STATE.deferredPrompt) $('#install-btn')?.click();
+  else showToast('Ya está instalado o no disponible en este navegador', 'ℹ️');
+});
+window.addEventListener('appinstalled', () => {
+  showToast('¡GameHub instalado con éxito!', '🎉');
+});
+
+/* ─── USAGE TIME ──────────────────────────────────────────────── */
+setInterval(async () => {
+  STATE.usageTime += 60000;
+  await dbPut('stats', { key:'usageTime', value:STATE.usageTime });
+  updateTimeStats();
+}, 60000);
+// Update every 5s on screen
+setInterval(updateTimeStats, 5000);
+
+/* ─── SWIPE SUPPORT ─────────────────────────────────────────── */
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive:true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) < 80) return;
+  if (dx > 0 && touchStartX < 30) { // swipe right from edge
+    $('#sidebar').classList.add('open');
+    $('#sidebar-overlay').classList.add('show');
+  }
+  if (dx < 0 && $('#player-modal.open')) {
+    // nothing for now
+  }
+}, { passive:true });
+
+/* ─── LAZY LOADING ─────────────────────────────────────────── */
+if ('IntersectionObserver' in window) {
+  const imgObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        if (img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
+        imgObs.unobserve(img);
+      }
+    });
+  }, { rootMargin: '100px' });
+  // Observe lazily created images
+  const mutObs = new MutationObserver(() => {
+    $$('img[data-src]').forEach(img => imgObs.observe(img));
+  });
+  mutObs.observe(document.getElementById('content'), { childList:true, subtree:true });
+}
+
+/* ─── ANIMATIONS CHECK ─────────────────────────────────────── */
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  STATE.settings.anim = false;
+  document.body.setAttribute('data-animations','false');
+}
+// Disable animations when setting is off
+const animStyle = document.createElement('style');
+animStyle.id = 'anim-style';
+document.head.appendChild(animStyle);
+function updateAnimStyle() {
+  if (!STATE.settings.anim) {
+    animStyle.textContent = '*{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}';
+  } else {
+    animStyle.textContent = '';
+  }
+}
+$('#toggle-anim')?.addEventListener('change', () => updateAnimStyle());
+
+/* ─── INIT ────────────────────────────────────────────────────── */
+async function init() {
+  showProgress(20);
+  try {
+    await openDB();
+    showProgress(40);
+    await loadSettings();
+    showProgress(60);
+    // Load favorites
+    const favs = await dbGetAll('favorites');
+    STATE.favorites = new Set(favs.map(f=>f.id));
+    STATE.history = await dbGetAll('history');
+    STATE.history.sort((a,b)=>b.lastOpened-a.lastOpened);
+    showProgress(80);
+    updateFavBadge();
+    generateManifest();
+    registerSW();
+    renderHome();
+    startHeroAuto();
+    showProgress(100);
+    // Handle URL hash for shortcuts
+    const hash = location.hash.replace('#','');
+    if (['library','search','favorites','history','categories','settings','about'].includes(hash)) {
+      navigateTo(hash);
+    }
+    // Welcome toast after 1s
+    setTimeout(()=>showToast(`${ITEMS.length} elementos cargados`, '🎮'),1000);
+  } catch(err) {
+    console.error('Init error:', err);
+    showProgress(100);
+    renderHome();
+    startHeroAuto();
+  }
+}
+init();
+
+/* ─── DEEP KEYBOARD SHORTCUTS HELP ─────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key==='?' && !e.ctrlKey && !e.altKey) {
+    showToast('Atajos: / Buscar • H Inicio • L Biblioteca • Esc Cerrar','⌨️');
+  }
+});
+</script>
+</body>
+</html>
