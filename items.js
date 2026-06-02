@@ -23,12 +23,13 @@ const ITEMS = [
 
   {
   id: "tris",
-  name: "Tetris Online",
+  name: "TetOnline",
   description: "Juega al legendario Tetris.",
-  image: "https://tetris.com/sites/default/files/tetris-home-module-art_4.png",
-  url: "https://tetris.com/play-tetris",
+  image: "https://tetris.com/sites/defalt/files/tetris-home-module-art_4.png",
+  url: "https://tetris.com/pla-tetris",
   category: "Clásicos",
   featured: true,
   type: "game"
-  }
+  },
+  
 ];
