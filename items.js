@@ -19,7 +19,16 @@ const ITEMS = [
     category: "Clásicos",
     featured: true,
     type: "game"
-  }
+  },
 
-  // Resto de tus juegos...
+  {
+  id: "tris",
+  name: "Tetris Online",
+  description: "Juega al legendario Tetris.",
+  image: "https://tetris.com/sites/default/files/tetris-home-module-art_4.png",
+  url: "https://tetris.com/play-tetris",
+  category: "Clásicos",
+  featured: true,
+  type: "game"
+  }
 ];
